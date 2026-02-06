@@ -50,7 +50,7 @@ export function pApp(el) {
     paragraphs.append(newP);
     if (paragraphs.childElementCount > 5) paragraphs.firstElementChild.remove();
     input.value = '';
-              button.hidden = true;
+              button.hidden = true; 
   }
 
             input.addEventListener('input', changeButtonVisibility)
