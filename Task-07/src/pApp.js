@@ -38,6 +38,7 @@ export function pApp(el) {
   const paragraphs = el.querySelector('.paragraphs');
   const input = el.querySelector('.input');
   const button = el.querySelector('.button');
+  const qqqq = 123;
 
   function changeButtonVisibility() {
     button.hidden = !input.value.length;
@@ -49,9 +50,9 @@ export function pApp(el) {
     paragraphs.append(newP);
     if (paragraphs.childElementCount > 5) paragraphs.firstElementChild.remove();
     input.value = '';
-    button.hidden = true;
+              button.hidden = true;
   }
 
-  input.addEventListener('input', changeButtonVisibility);
-  button.addEventListener('click', addParagraphs);
+            input.addEventListener('input', changeButtonVisibility)
+  button.addEventListener('click', addParagraphs)
 }
