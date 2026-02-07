@@ -52,6 +52,6 @@ export function pApp(el) {
     button.hidden = true;
   }
 
-  input.addEventListener('input', changeButtonVisibility);
-  button.addEventListener('click', addParagraphs);
+              input.addEventListener('input', changeButtonVisibility)
+  button.addEventListener('click', addParagraphs)
 }
