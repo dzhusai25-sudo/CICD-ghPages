@@ -1,1 +1,1 @@
-(()=>{"use strict";document.body.innerHTML="<h1>Hello world!</h1>"})();
+(()=>{var r={424(r){r.exports={runApp:function(r){r.innerHTML="<h1>Hello world!</h1>"}}}},o={};const{runApp:n}=function n(t){var e=o[t];if(void 0!==e)return e.exports;var p=o[t]={exports:{}};return r[t](p,p.exports,n),p.exports}(424);n(document.body)})();
