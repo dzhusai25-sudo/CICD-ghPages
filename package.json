@@ -10,7 +10,7 @@
     "dev": "webpack serve --mode=development"
   },
   "lint-staged": {
-    "*.{js,css,md,yml}": [
+    "*.{js,css,md,yml,html}": [
       "eslint",
       "prettier --write"
     ]
