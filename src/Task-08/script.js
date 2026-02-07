@@ -4,7 +4,7 @@
 недели по введённой дате.
 */
 
-const dateString = prompt('Enter your date dd.mm.yyyy: ')
+const dateString = prompt('Enter your date dd.mm.yyyy: ');
 const [day, month, year] = dateString.split('.');
 const dayNumberOfWeek = new Date(`${year}-${month}-${day}`).getDay();
 const daysNamesOfWeek = [
@@ -14,7 +14,7 @@ const daysNamesOfWeek = [
   'среда',
   'четверг',
   'пятница',
-  'суббота'
+  'суббота',
 ];
 
 console.log(daysNamesOfWeek[dayNumberOfWeek]);
@@ -36,12 +36,12 @@ console.log(Hours * 60 + Minutes);
 пользователя.
 */
 
-const user1 = {name: 'Alex', age: '10.09.1993'};
-const user2 = {name: 'Dmitry', age: '15.01.1993'};
+const user1 = { name: 'Alex', age: '10.09.1993' };
+const user2 = { name: 'Dmitry', age: '15.01.1993' };
 
 function strToDate(dateString) {
-   const [day, month, year] = dateString.split('.');
-   return new Date(`${year}-${month}-${day}`)
+  const [day, month, year] = dateString.split('.');
+  return new Date(`${year}-${month}-${day}`);
 }
 
-console.log(strToDate(user1.age) > strToDate(user2.age)? user1 : user2);
+console.log(strToDate(user1.age) > strToDate(user2.age) ? user1 : user2);

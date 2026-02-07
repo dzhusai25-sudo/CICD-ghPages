@@ -3,7 +3,7 @@
 
 const arr = [11, 22, 44, 2, 55, 88, 10, 4, 6, 99];
 let sum = 0;
-arr.forEach(el => sum += el);
+arr.forEach((el) => (sum += el));
 console.log(sum);
 
 /*
@@ -14,7 +14,7 @@ console.log(sum);
 массив).
 */
 
-const newArr = arr.map(el => el * 2);
+const newArr = arr.map((el) => el * 2);
 
 /*
 3.*Найдите и выведите в консоль наибольший и

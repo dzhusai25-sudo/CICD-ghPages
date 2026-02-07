@@ -1,3 +1,3 @@
-import { pApp } from "./pApp.js";
+import { pApp } from './pApp.js';
 
-pApp(document.querySelector("#app"));
+pApp(document.querySelector('#app'));

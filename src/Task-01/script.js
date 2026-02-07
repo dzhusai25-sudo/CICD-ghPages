@@ -28,8 +28,6 @@ console.log(c.length + d.length);
 const Str = prompt('Enter your 3 digit number');
 const input = Number(Str);
 if (Str.length === 3 && input >= 100 && input <= 999) {
-    const arr = Str.split('');
-    console.log(Number(arr[0]) + Number(arr[1]) + Number(arr[2]));
-}
-else
-    alert('bad value');
+  const arr = Str.split('');
+  console.log(Number(arr[0]) + Number(arr[1]) + Number(arr[2]));
+} else alert('bad value');

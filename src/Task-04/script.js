@@ -4,8 +4,8 @@
 введенное значение в поле age объекта user.
 */
 
-const user = {name: 'John'};
-user.age = +prompt('fill John\'s age: ');
+const user = { name: 'John' };
+user.age = +prompt("fill John's age: ");
 
 /*
 2.Создать копию объекта user с именем admin.
@@ -22,5 +22,5 @@ admin.role = 'admin';
 должны совпадать с названиями полей.
 */
 
-let {name, age, role} = admin;
+let { name, age, role } = admin;
 console.log(name, age, role);

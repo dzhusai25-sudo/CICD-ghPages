@@ -4,7 +4,7 @@
 */
 let sum = 0;
 for (let i = 50; i <= 100; i++) {
-    sum += i;
+  sum += i;
 }
 
 console.log(sum);
@@ -19,7 +19,7 @@ console.log(sum);
 
 const factor = 7;
 for (let i = 1; i <= 9; i++) {
-    console.log(`${factor} x ${i} = ${factor * i}`)
+  console.log(`${factor} x ${i} = ${factor * i}`);
 }
 
 /*
@@ -32,7 +32,7 @@ const input = +prompt('Enter your number');
 let summa = 0;
 let count = 0;
 for (let i = 1; i <= input; i = i + 2) {
-    summa += i;
-    count ++;
+  summa += i;
+  count++;
 }
 console.log(summa / count);

@@ -18,21 +18,17 @@ function isEmail(input) {
 
 // 3.*Номером телефона.
 function isPhone(input) {
-  const cleaned = input.replace(/[\s\-\(\)\+]/g, "");
+  const cleaned = input.replace(/[\s\-\(\)\+]/g, '');
   const regExPhone = /^[78]\d{10}$/;
   return regExPhone.test(cleaned);
 }
 
 function checkInput(input) {
-    if (isDate(input))
-        return 'дата'; 
-    else if (isEmail(input))
-        return 'email';
-    else if (isPhone(input))
-        return 'номер телефона';
-    else
-        return '"не соответствует ни одному формату"';
+  if (isDate(input)) return 'дата';
+  else if (isEmail(input)) return 'email';
+  else if (isPhone(input)) return 'номер телефона';
+  else return '"не соответствует ни одному формату"';
 }
 
-const input = prompt ('Введите дату или email или номер телефона');
+const input = prompt('Введите дату или email или номер телефона');
 console.log(`${input} - ${checkInput(input)}`);

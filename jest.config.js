@@ -32,7 +32,7 @@ const config = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -41,7 +41,6 @@ const config = {
   //   "lcov",
   //   "clover"
   // ],
-
 
   coverageThreshold: {
     global: {
@@ -157,7 +156,7 @@ const config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jsdom",
+  testEnvironment: 'jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -215,10 +214,6 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'text'],
-  collectCoverageFrom: [
-    'Task-07/src/*.js',
-    '!Task-07/src/index.js',
-
-  ]
+  collectCoverageFrom: ['Task-07/src/*.js', '!Task-07/src/index.js'],
   // Другие настройки (например, coverage, globals)
 };

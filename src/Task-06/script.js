@@ -5,7 +5,7 @@
 */
 
 function diff(a, b) {
-    return a > b ? a - b: b -a;
+  return a > b ? a - b : b - a;
 }
 
 /*
@@ -16,7 +16,7 @@ function diff(a, b) {
 */
 
 function isWord(str) {
-    return str.split(' ').length === 1;
+  return str.split(' ').length === 1;
 }
 
 /*
@@ -25,5 +25,5 @@ function isWord(str) {
 */
 
 function pow(a, x) {
-    return Math.pow(a, x);
+  return Math.pow(a, x);
 }
