@@ -1,4 +1,4 @@
-name: CI Sanity Check
+name: lint
 
 on:
   pull_request:
