@@ -35,9 +35,9 @@ export function pApp(el) {
     <button class="button" hidden="true">Добавить параграф</button>
     `;
 
-  const paragraphs = el.querySelector('.paragraphs');
-  const input = el.querySelector('.input');
-  const button = el.querySelector('.button');
+  const paragraphs = el.querySelector('.paragraphs')
+  const input = el.querySelector('.input')
+  const button = el.querySelector('.button')
 
   function changeButtonVisibility() {
     button.hidden = !input.value.length;
