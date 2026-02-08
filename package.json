@@ -7,7 +7,9 @@
     "lint": "eslint",
     "prepare": "husky",
     "build": "webpack --mode=production",
-    "dev": "webpack serve --mode=development"
+    "dev": "webpack serve --mode=development",
+    "lint:check": "prettier --check .",
+    "lint:fix": "prettier --write ."
   },
   "lint-staged": {
     "*.{js,cjs,mjs,css,md,yml,html}": [
