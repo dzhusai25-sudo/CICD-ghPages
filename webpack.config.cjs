@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/Task-07/src/index.js',
+  entry: './src/index.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
@@ -11,7 +11,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
-    port: 9004,
+    port: 9005,
   },
   plugins: [new HtmlWebpackPlugin()],
   module: {
