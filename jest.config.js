@@ -214,6 +214,6 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'text'],
-  collectCoverageFrom: ['Task-07/src/*.js', '!Task-07/src/index.js'],
+  collectCoverageFrom: ['Task-07/src/*.js', '!Task-07/src/*.js'],
   // Другие настройки (например, coverage, globals)
 };

@@ -11,9 +11,14 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
-    port: 9005,
+    port: 9012,
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      filename: 'index.html',
+    }),
+  ],
   module: {
     rules: [
       {

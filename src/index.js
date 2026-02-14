@@ -1,3 +1,3 @@
-const { runApp } = require('./runApp.cjs');
+import { pApp } from './pApp.js';
 
-runApp(document.body);
+pApp(document.querySelector('#app'));
