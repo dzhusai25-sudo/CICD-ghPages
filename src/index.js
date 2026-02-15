@@ -1,3 +1,3 @@
-import { pApp } from './pApp.js';
+import { runApp } from './runApp';
 
-pApp(document.querySelector('#app'));
+runApp(document.body);
