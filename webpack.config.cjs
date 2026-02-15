@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/weather/script.js',
+  entry: './src/index.js',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
@@ -11,14 +11,9 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
-    port: 9013,
+    port: 8001,
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/weather/index.html',
-      filename: 'index.html',
-    }),
-  ],
+  plugins: [new HtmlWebpackPlugin({})],
   module: {
     rules: [
       {
