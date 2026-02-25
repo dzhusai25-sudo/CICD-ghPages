@@ -1,0 +1,64 @@
+/* CSS написал с использованием LLM для красоты
+
+Базовый сброс отступов и полей */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #e6f7ff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Контейнер приложения */
+.weather-app {
+  max-width: 500px;
+  width: 100%;
+  padding: 24px;
+  background-color: white;
+}
+
+/* Заголовок */
+.runApp {
+  text-align: center;
+  color: #1a73e8;
+}
+
+/* Поле ввода */
+#cityInput {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+/* Кнопка */
+#getWeatherButton {
+  width: 100%;
+  padding: 16px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  font-family: inherit;
+}
+
+/* Карточка погоды */
+.weather-card {
+  border-radius: 16px;
+  background: #667eea 0%;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+}
