@@ -1,34 +1,10 @@
 import './runApp.css';
+import { WeatherService } from './services/WeatherService.js';
+import { LocationService } from './services/LocationService.js';
+import { StorageService } from './services/StorageService.js';
 
-async function fetchCurrentWeather() {
-  const url = 'https://get.geojs.io/v1/ip/geo.json';
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Не удалось определить текущее местоположение');
-  }
-  return await response.json();
-}
-
-async function fetchWeather(city, apiId) {
-  const url = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${apiId}&lang=ru`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Город не найден или ошибка API');
-  }
-  return await response.json();
-}
-
-function buildNewHistory(city) {
-  let history = JSON.parse(localStorage.getItem('Cities')) || [];
-  history = history.filter((el) => el.toLowerCase() !== city.toLowerCase());
-  history.unshift(city);
-  history = history.slice(0, 10);
-  localStorage.setItem('Cities', JSON.stringify(history));
-  return history;
-}
-
-function renderSearchHistory(el) {
-  const history = JSON.parse(localStorage.getItem('Cities')) || [];
+function renderSearchHistory(el, StorageService) {
+  const history = StorageService.getHistory();
   if (history.length === 0) {
     el.innerHTML = '<p>История поиска пуста</p>';
     return;
@@ -61,29 +37,29 @@ export async function runApp(el) {
     </div>
   `;
 
+  const weatherService = new WeatherService('97d93f1704dcb8e35dd2045c8e75710d');
+  const locationService = new LocationService();
+  const storageService = new StorageService();
+
   //Блок констант
   const input = el.querySelector('#cityInput');
   const button = el.querySelector('#getWeatherButton');
   const resultDiv = el.querySelector('#weatherResult');
   const historyDiv = el.querySelector('#searchHistory');
   const currentWeatherDiv = el.querySelector('#currentWeather');
-  const API_ID = '97d93f1704dcb8e35dd2045c8e75710d';
 
   //Отображение погоды по гео
   try {
-    const currentData = await fetchCurrentWeather();
-    if (!currentData.city) {
-      throw new Error('Не удалось получить название города');
-    }
-    const currentWeatherData = await fetchWeather(currentData.city, API_ID);
-    currentWeatherDiv.innerHTML = `Погода в городе ${currentData.city}: ${currentWeatherData.main.temp} °C`;
+    const currentCity = await locationService.getCurrentLocation();
+    const currentWeatherData = await weatherService.fetchWeather(currentCity);
+    currentWeatherDiv.innerHTML = `Погода в городе ${currentCity}: ${currentWeatherData.main.temp} °C`;
   } catch (error) {
     currentWeatherDiv.innerHTML = `Не удалось загрузить текущую погоду: ${error.message}`;
     console.error('Ошибка загрузки текущей погоды:', error);
   }
 
   //Отображение истории запросов
-  renderSearchHistory(historyDiv);
+  renderSearchHistory(historyDiv, storageService);
 
   //Обработчик клика
   button.addEventListener('click', async () => {
@@ -99,9 +75,9 @@ export async function runApp(el) {
     button.disabled = true;
 
     try {
-      const data = await fetchWeather(city, API_ID);
+      const data = await weatherService.fetchWeather(city);
 
-      buildNewHistory(city);
+      storageService.addCityToHistory(city);
 
       input.value = '';
 
@@ -116,7 +92,7 @@ export async function runApp(el) {
         </div>
       `;
 
-      renderSearchHistory(historyDiv);
+      renderSearchHistory(historyDiv, storageService);
     } catch (error) {
       resultDiv.innerHTML = `
         <div class="error-message">
