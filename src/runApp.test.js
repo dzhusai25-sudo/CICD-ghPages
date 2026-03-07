@@ -123,11 +123,98 @@ describe('StorageService', () => {
 });
 
 describe('Check runApp', () => {
+  let appContainer;
+
+  beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    appContainer = document.createElement('div');
+    document.body.appendChild(appContainer);
+  });
+
+  afterEach(() => {
+    console.error.mockRestore();
+    document.body.removeChild(appContainer);
+    localStorage.clear();
+  });
+
   it('function test', () => expect(runApp).toBeInstanceOf(Function));
 
   it('div test', () => {
     const el = document.createElement('div');
     runApp(el);
     expect(el.innerHTML.length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('инициализация интерфейса приложения', async () => {
+    const el = document.createElement('div');
+    await runApp(el);
+
+    // основные элементы интерфейса
+    expect(el.querySelector('#cityInput')).not.toBeNull();
+    expect(el.querySelector('#getWeatherButton')).not.toBeNull();
+    expect(el.querySelector('#weatherResult')).not.toBeNull();
+    expect(el.querySelector('#searchHistory')).not.toBeNull();
+    expect(el.querySelector('#currentWeather')).not.toBeNull();
+
+    // лоадинг после клика
+    el.querySelector('#cityInput').value = 'Tomsk';
+    el.querySelector('#getWeatherButton').click();
+    expect(el.querySelector('#weatherResult').textContent).toContain(
+      'Загрузка...',
+    );
+    expect(el.querySelector('#getWeatherButton').disabled).toBe(true);
+  });
+
+  it('должна отображать состояние загрузки при запросе погоды', async () => {
+    await runApp(appContainer);
+
+    const input = appContainer.querySelector('#cityInput');
+    const button = appContainer.querySelector('#getWeatherButton');
+    const resultDiv = appContainer.querySelector('#weatherResult');
+
+    input.value = 'Tomsk';
+
+    // Имитируем клик
+    button.click();
+
+    // Проверяем состояние загрузки
+    expect(resultDiv.textContent).toContain('Загрузка...');
+    expect(button.disabled).toBe(true);
+  });
+
+  it('должна сбрасывать состояние загрузки после завершения запроса', async () => {
+    await runApp(appContainer);
+
+    const input = appContainer.querySelector('#cityInput');
+    const button = appContainer.querySelector('#getWeatherButton');
+    const resultDiv = appContainer.querySelector('#weatherResult');
+
+    input.value = 'Moscow';
+
+    // Имитируем клик
+    button.click();
+
+    // Ждём завершения асинхронной операции
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Проверяем, что кнопка разблокирована
+    expect(button.disabled).toBe(false);
+
+    // Проверяем, что загрузка завершена (не содержит «Загрузка...»)
+    expect(resultDiv.textContent).not.toContain('Загрузка...');
+  });
+
+  it('должна корректно отображать историю поиска', async () => {
+    // Предварительно добавляем город в историю
+    const storageService = new StorageService();
+    storageService.addCityToHistory('Moscow');
+
+    await runApp(appContainer);
+
+    const historyDiv = appContainer.querySelector('#searchHistory');
+    const listItems = historyDiv.querySelectorAll('li');
+
+    expect(listItems.length).toBeGreaterThanOrEqual(1);
+    expect(listItems[0].textContent).toBe('Moscow');
   });
 });

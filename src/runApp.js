@@ -47,7 +47,6 @@ export async function runApp(el) {
   const resultDiv = el.querySelector('#weatherResult');
   const historyDiv = el.querySelector('#searchHistory');
   const currentWeatherDiv = el.querySelector('#currentWeather');
-  const API_ID = '97d93f1704dcb8e35dd2045c8e75710d';
 
   //Отображение погоды по гео
   try {
