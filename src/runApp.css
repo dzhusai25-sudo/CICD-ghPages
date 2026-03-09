@@ -39,7 +39,7 @@ body {
 }
 
 /* Кнопка */
-#getWeatherButton {
+#getWeatherBtn {
   width: 100%;
   padding: 16px;
   background-color: #1a73e8;
