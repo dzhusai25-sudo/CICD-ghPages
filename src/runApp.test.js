@@ -326,4 +326,19 @@ describe('WeatherCurrentWidget', () => {
       'Загрузка текущей погоды...',
     );
   });
+
+  test('сохраняет структуру HTML при всех сценариях', async () => {
+    // Проверяем структуру при загрузке
+    await widget.render(null);
+    expect(container.querySelector('.weather-current')).toBeTruthy();
+    expect(container.querySelector('.current-weather')).toBeTruthy();
+
+    // Проверяем структуру при данных
+    await widget.render({
+      name: 'Казань',
+      main: { temp: 25 },
+    });
+    expect(container.querySelector('.weather-current')).toBeTruthy();
+    expect(container.querySelector('.current-weather')).toBeTruthy();
+  });
 });

@@ -6,6 +6,7 @@ import { WeatherCurrentWidget } from './widgets/WeatherCurrentWidget.js';
 import { WeatherSearchWidget } from './widgets/WeatherSearchWidget.js';
 import { SearchHistoryWidget } from './widgets/SearchHistoryWidget.js';
 import { ErrorWidget } from './widgets/ErrorWidget.js';
+import { eventBus } from './EventBus.js';
 
 export async function runApp(el) {
   el.innerHTML = `
@@ -48,7 +49,10 @@ export async function runApp(el) {
   const errorWidget = new ErrorWidget(errorWidgetContainer);
 
   try {
-    await currentWeatherWidget.render();
+    const city = await locationService.getCurrentLocation();
+    const weatherData = await weatherService.fetchWeather(city);
+
+    await currentWeatherWidget.render(weatherData);
   } catch (error) {
     console.error('Ошибка:', error);
     eventBus.emit(
