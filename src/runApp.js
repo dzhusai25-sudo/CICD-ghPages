@@ -46,7 +46,13 @@ export async function runApp(el) {
     storageService,
   );
 
-  const errorWidget = new ErrorWidget(errorWidgetContainer);
+  let errorWidget = null;
+
+  if (errorWidgetContainer) {
+    errorWidget = new ErrorWidget(errorWidgetContainer);
+  } else {
+    console.warn('Контейнер для ErrorWidget не найден на странице');
+  }
 
   try {
     const city = await locationService.getCurrentLocation();
