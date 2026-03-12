@@ -6,6 +6,7 @@ export class WeatherSearchWidget {
     this.weatherService = weatherService;
     this.storageService = storageService;
     this.render();
+    this.bindEvents();
   }
 
   render() {
@@ -16,16 +17,17 @@ export class WeatherSearchWidget {
         <div id="weatherResult"></div>
       </div>
     `;
-    this.bindEvents();
   }
 
   bindEvents() {
+    this.unsubscribe();
+    this.buttonHandler = this.handleSearch.bind(this);
     const button = this.container.querySelector('#getWeatherBtn');
-    button.addEventListener('click', () => this.handleSearch());
-
-    eventBus.on('history:city:selected', (city) => {
-      this.searchWeather(city);
-    });
+    if (button) {
+      button.addEventListener('click', this.buttonHandler);
+    }
+    this.searchHandler = (city) => this.searchWeather(city);
+    eventBus.on('city:selected', this.searchHandler);
   }
 
   async handleSearch() {
@@ -53,9 +55,21 @@ export class WeatherSearchWidget {
 
       eventBus.emit('weather:search:success', { city, weather });
     } catch (error) {
+      resultDiv.textContent = '';
       eventBus.emit('error', error.message);
     } finally {
       this.container.querySelector('#cityInput').value = '';
     }
+  }
+
+  unsubscribe() {
+    eventBus.off('city:selected', this.searchHandler);
+    this.searchHandler = null;
+
+    const button = this.container.querySelector('#getWeatherBtn');
+    if (button) {
+      button.removeEventListener('click', this.buttonHandler);
+    }
+    this.buttonHandler = null;
   }
 }
