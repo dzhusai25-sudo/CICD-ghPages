@@ -53,6 +53,7 @@ export class WeatherSearchWidget {
 
       eventBus.emit('weather:search:success', { city, weather });
     } catch (error) {
+      resultDiv.textContent = '';
       eventBus.emit('error', error.message);
     } finally {
       this.container.querySelector('#cityInput').value = '';

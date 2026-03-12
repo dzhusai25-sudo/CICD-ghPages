@@ -3,6 +3,7 @@
 Базовый сброс отступов и полей */
 * {
   box-sizing: border-box;
+  border-radius: 45px;
 }
 
 body {
@@ -28,6 +29,17 @@ body {
   color: #1a73e8;
 }
 
+.orNot {
+  text-align: left;
+  color: #1a73e8;
+}
+
+/* Навигация */
+.navi {
+  text-align: right;
+  font-size: 0.9rem;
+}
+
 /* Поле ввода */
 #cityInput {
   width: 100%;
@@ -42,8 +54,8 @@ body {
 #getWeatherBtn {
   width: 100%;
   padding: 16px;
-  background-color: #1a73e8;
-  color: white;
+  background-color: hsl(53, 83%, 50%);
+  color: rgb(255, 255, 255);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -71,4 +83,14 @@ body {
   color: white;
   text-align: center;
   overflow: visible;
+}
+
+.search-history {
+  text-align: left;
+  color: lab(6.32% 21.41 8.26 / 0.42);
+  padding: 0.5%;
+}
+
+.error {
+  color: #df1919;
 }

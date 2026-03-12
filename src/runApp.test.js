@@ -193,7 +193,7 @@ describe('Check runApp', () => {
     const listItems = historyDiv.querySelectorAll('li');
 
     expect(listItems.length).toBeGreaterThanOrEqual(1);
-    expect(listItems[0].textContent).toBe('Moscow');
+    expect(listItems[0].textContent).toBe('MOSCOW');
   });
 });
 

@@ -13,11 +13,11 @@ export class SearchHistoryWidget {
     const history = this.storageService.getHistory();
     this.container.innerHTML = `
       <div class="search-history">
-        <h4>История поиска</h4>
+        <h4>История поиска:</h4>
         ${
           history.length
-            ? `<ul>${history.map((city) => `<li>${city}</li>`).join('')}</ul>`
-            : '<p>История пуста</p>'
+            ? `<ul>${history.map((city) => `<li>${city.toUpperCase()}</li>`).join('')}</ul>`
+            : '<p>История пуста :(</p>'
         }
       </div>
     `;
