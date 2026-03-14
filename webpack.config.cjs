@@ -11,7 +11,8 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
-    port: 8003,
+    port: 8014,
+    historyApiFallback: true,
   },
   plugins: [new HtmlWebpackPlugin({})],
   module: {
