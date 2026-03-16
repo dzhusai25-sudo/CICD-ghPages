@@ -28,4 +28,5 @@ export class EventBus {
   }
 }
 
+//экспортируемый экземепляр класса EventBus
 export const eventBus = new EventBus();

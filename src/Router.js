@@ -1,46 +1,86 @@
 export class Router {
   constructor() {
-    this.routes = new Map();
+    this.routes = [];
     this.currentRoute = null;
   }
 
   addRoute(path, handler) {
-    this.routes.set(path, handler);
+    if (path.includes('/*')) {
+      path = path.split('/*')[0];
+      this.routes.push({
+        type: 'param',
+        path,
+        handler,
+      });
+    } else {
+      this.routes.push({
+        type: 'static',
+        path,
+        handler,
+      });
+    }
+  }
+
+  findMatchingRoute(path) {
+    console.log(path);
+    // статические маршруты
+    const staticRoute = this.routes.find(
+      (route) => route.type === 'static' && route.path === path,
+    );
+    if (staticRoute) {
+      return {
+        handler: staticRoute.handler,
+        params: [],
+      };
+    }
+    // параметризированные маршруты
+    for (const route of this.routes) {
+      if (route.type === 'param') {
+        if (path.startsWith(route.path)) {
+          const param = path.slice(route.path.length + 1);
+
+          return {
+            handler: route.handler,
+            params: [param],
+          };
+        }
+      }
+    }
+    // *
+    const wildcardRoute = this.routes.find((route) => route.path === '*');
+    if (wildcardRoute) {
+      return {
+        handler: wildcardRoute.handler,
+        params: [],
+      };
+    }
+
+    return null;
   }
 
   async handleRoute(path = window.location.pathname) {
-    const route = this.findMatchingRoute(path);
-    if (!route) {
+    const matchedRoute = this.findMatchingRoute(path);
+
+    if (!matchedRoute) {
       console.warn(`Маршрут "${path}" не найден`);
       return;
     }
 
     try {
-      await route.handler();
+      await matchedRoute.handler([...matchedRoute.params]);
       this.currentRoute = path;
-      window.history.pushState({}, '', path);
+
+      if (window.location.pathname !== path) {
+        window.history.pushState({}, '', path);
+      }
     } catch (error) {
       console.error(`Ошибка при обработке маршрута "${path}":`, error);
       throw error;
     }
   }
 
-  findMatchingRoute(path) {
-    // Сначала ищем точное совпадение
-    if (this.routes.has(path)) {
-      return { path, handler: this.routes.get(path) };
-    }
-
-    // Затем ищем wildcard (*)
-    if (this.routes.has('*')) {
-      return { path: '*', handler: this.routes.get('*') };
-    }
-
-    return null;
-  }
-
   init() {
-    // Обработчик навигации по ссылкам
+    // нави по ссылкам
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[data-route]');
       if (link) {
@@ -50,7 +90,7 @@ export class Router {
       }
     });
 
-    // Обработчик кнопки «Назад/Вперёд» в браузере
+    // Назад/Вперёд
     window.addEventListener('popstate', () => {
       this.handleRoute();
     });

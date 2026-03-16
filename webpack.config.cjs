@@ -11,10 +11,20 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
-    port: 8014,
+    port: 8015,
     historyApiFallback: true,
   },
-  plugins: [new HtmlWebpackPlugin({})],
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      publicPath: '/',
+    }),
+    new HtmlWebpackPlugin({
+      filename: '404.html',
+      publicPath: '/',
+      // publicPath: PREFIX,
+    }),
+  ],
   module: {
     rules: [
       {

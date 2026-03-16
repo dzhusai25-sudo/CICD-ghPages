@@ -17,7 +17,7 @@ body {
 
 /* Контейнер приложения */
 .weather-app {
-  height: 850px; /* Фиксированная высота */
+  height: 900px; /* Фиксированная высота */
   max-width: 500px;
   width: 100%;
   padding: 24px;

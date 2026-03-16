@@ -7,15 +7,19 @@ import { WeatherSearchWidget } from './widgets/WeatherSearchWidget.js';
 import { SearchHistoryWidget } from './widgets/SearchHistoryWidget.js';
 import { ErrorWidget } from './widgets/ErrorWidget.js';
 import { Router } from './router.js';
-import { EventBus } from './EventBus.js';
+import { eventBus } from './EventBus.js';
 
 export async function runApp(el) {
   el.innerHTML = `
     <div class="weather-app">
       <nav class="navi">
-        <a href="/" data-route="/" class="nav-link">🌤Главная</a>
+      <p>
+        <a href="/" data-route="/" class="nav-link">🌤 Главная</a>
+        <a href="/weather/Moscow" data-route="/weather/Moscow" class="nav-link">🏛 Москва</a>
+        <a href="/weather/New%20York" data-route="/weather/New%20York" class="nav-link">🗽 Нью-Йорк</a>
+      </p>
         <a href="/about" data-route="/about" class="nav-link">ℹ️ О приложении</a>
-        <a href="/contacts" data-route="/contacts" class="nav-link">👤Контакты</a>
+        <a href="/contacts" data-route="/contacts" class="nav-link">👤 Контакты</a>
       </nav>
       <div id="currentWidget" class="widget current-weather"></div>
       <h1 class="runApp"></h1>
@@ -62,10 +66,39 @@ export async function runApp(el) {
     console.warn('Контейнер для ErrorWidget не найден на странице');
   }
 
+  async function displayWeatherForCity(city) {
+    try {
+      clearContent();
+      const decodedCity = decodeURIComponent(city);
+      const currenCity = await locationService.getCurrentLocation();
+      const weatherData = await weatherService.fetchWeather(currenCity);
+
+      weatherTitle.innerHTML = 'Enjoy your weather! 🌞';
+      weatherSubtitle.innerHTML = '... (or not 🌧️)';
+      weatherSearchWidget.render();
+      weatherSearchWidget.bindEvents();
+      searchHistoryWidget.render();
+
+      await currentWeatherWidget.render(weatherData);
+      await weatherSearchWidget.searchWeather(decodedCity);
+
+      if (errorWidget && errorWidget.bindEvents) {
+        errorWidget.bindEvents();
+      }
+    } catch (error) {
+      console.error(`Ошибка загрузки погоды для города ${city}:`, error);
+      eventBus.emit(
+        'error',
+        `Не удалось загрузить погоду для города ${decodeURIComponent(city)}`,
+      );
+    }
+  }
+
   const router = new Router();
 
   router.addRoute('/', async () => {
     try {
+      clearContent();
       weatherTitle.innerHTML = 'Enjoy your weather! 🌞';
       weatherSubtitle.innerHTML = '... (or not 🌧️)';
 
@@ -76,22 +109,27 @@ export async function runApp(el) {
       weatherSearchWidget.render();
       weatherSearchWidget.bindEvents();
       searchHistoryWidget.render();
-      errorWidget.bindEvents();
+
+      if (errorWidget) {
+        errorWidget.bindEvents();
+      }
     } catch (error) {
       console.error('Ошибка:', error);
-      EventBus.emit(
+      eventBus.emit(
         'error',
         'Не удалось загрузить приложение. Проверьте подключение к интернету.',
       );
     }
   });
 
-  // Обработчик страницы «О приложении»
+  router.addRoute('/weather/*', async (city) => {
+    clearContent();
+    await displayWeatherForCity(city);
+  });
+
   router.addRoute('/about', () => {
-    // Очищаем виджеты и заголовки
     clearContent();
 
-    // Отображаем контент страницы «О приложении»
     searchWidgetContainer.innerHTML = `
       <div class="about-page">
         <h2>О приложении</h2>
@@ -101,50 +139,55 @@ export async function runApp(el) {
     `;
   });
 
-  // Обработчик страницы «О приложении»
   router.addRoute('/contacts', () => {
-    // Очищаем виджеты и заголовки
     clearContent();
 
     searchWidgetContainer.innerHTML = `
-      <div class="contacts">
-        <a href="https://github.com/dzhusai25-sudo" target="_blank">Страница на GitHub</a>
+      <div class="contacts-page">
+        <h2>Контакты</h2>
+        <a href="https://github.com/dzhusai25-sudo" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
       </div>
     `;
   });
 
-  // Обработчик 404-страницы
   router.addRoute('*', () => {
     clearContent();
+
     searchWidgetContainer.innerHTML = `
       <div class="error-page">
-        <h2>Страница не найдена</h2>
+        <h2>404 - Страница не найдена</h2>
         <p>Запрошенная страница не существует.</p>
-        <a href="/">Вернуться на главную</a>
+        <p>Попробуйте перейти по одному из существующих маршрутов:</p>
+        <ul>
+          <li><a href="/" data-route="/">Главная</a></li>
+          <li><a href="/about" data-route="/about">О приложении</a></li>
+          <li><a href="/contacts" data-route="/contacts">Контакты</a></li>
+          <li><a href="/weather/Moscow" data-route="/weather/Moscow">Погода в Москве</a></li>
+          <li><a href="/weather/Tomsk" data-route="/weather/Tomsk">Погода в Томске</a></li>
+          <li><a href="/weather/Paris" data-route="/weather/Paris">Погода в Париже</a></li>
+        </ul>
       </div>
     `;
   });
 
   router.init();
 
-  // Запускаем обработку текущего маршрута
-  try {
-    await router.handleRoute();
-  } catch (error) {
-    console.error('Критическая ошибка инициализации:', error);
-    EventBus.emit(
-      'error',
-      'Критическая ошибка. Приложение не может запуститься.',
-    );
-  }
-
-  // Функция очистки контента
   function clearContent() {
-    currentWidgetContainer.innerHTML = '';
-    searchWidgetContainer.innerHTML = '';
-    historyWidgetContainer.innerHTML = '';
-    errorWidgetContainer.innerHTML = '';
-    weatherTitle.innerHTML = '';
-    weatherSubtitle.innerHTML = '';
+    const contents = [
+      currentWidgetContainer,
+      searchWidgetContainer,
+      historyWidgetContainer,
+      errorWidgetContainer,
+      weatherTitle,
+      weatherSubtitle,
+    ];
+
+    contents.forEach((content) => {
+      if (content) {
+        content.innerHTML = '';
+      }
+    });
   }
 }

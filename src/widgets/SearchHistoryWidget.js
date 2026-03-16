@@ -16,7 +16,7 @@ export class SearchHistoryWidget {
         <h4>История поиска</h4>
         ${
           history.length
-            ? `<ul>${history.map((city) => `<li>${city}</li>`).join('')}</ul>`
+            ? `<ul>${history.map((city) => `<li>${city.toUpperCase()}</li>`).join('')}</ul>`
             : '<p>История пуста</p>'
         }
       </div>
