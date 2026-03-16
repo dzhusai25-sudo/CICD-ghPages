@@ -19,7 +19,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
-    port: 8015,
+    port: 8000,
     historyApiFallback: true,
   },
   plugins: [
@@ -32,7 +32,8 @@ module.exports = {
       publicPath: PREFIX,
     }),
     new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(isProduction),
+      PRODUCTION: process.env.NODE_ENV === 'production',
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       PREFIX: JSON.stringify(PREFIX),
     }),
   ],

@@ -6,9 +6,9 @@
     "test": "jest",
     "lint": "eslint",
     "prepare": "husky",
-    "build": "NODE_ENV=production webpack --mode=production",
-    "build:dev": "webpack --mode=development",
-    "dev": "webpack serve --mode=development",
+    "build": "set process.env.NODE_ENV='production' && webpack --mode=production",
+    "build:dev": "set process.env.NODE_ENV='development' && webpack --mode=development",
+    "dev": "set process.env.NODE_ENV='development' && webpack serve --mode=development",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write ."
   },
