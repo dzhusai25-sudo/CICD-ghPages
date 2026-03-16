@@ -1,5 +1,7 @@
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const isProduction = process.env.NODE_ENV === 'production';
 const REPO_NAME = 'CICD-ghPages';
 const BASE_URL = `https://dzhusai25-sudo.github.io/${REPO_NAME}/`;
@@ -28,6 +30,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: '404.html',
       publicPath: PREFIX,
+    }),
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(isProduction),
+      PREFIX: JSON.stringify(PREFIX),
     }),
   ],
   module: {
