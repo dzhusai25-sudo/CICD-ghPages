@@ -32,8 +32,8 @@ module.exports = {
       publicPath: PREFIX,
     }),
     new webpack.DefinePlugin({
-      PRODUCTION: process.env.NODE_ENV === 'production',
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      PRODUCTION: isProduction,
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       PREFIX: JSON.stringify(PREFIX),
     }),
   ],
