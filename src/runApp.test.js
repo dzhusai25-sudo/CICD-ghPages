@@ -343,7 +343,7 @@ describe('WeatherCurrentWidget', () => {
   let originalDocumentAddEventListener;
 
   // Импортируем реальный Router (не мок)
-  const RealRouter = jest.requireActual('./router.js').Router;
+  const RealRouter = jest.requireActual('./Router.js').Router;
 
   beforeEach(() => {
     // Сохраняем оригиналы
