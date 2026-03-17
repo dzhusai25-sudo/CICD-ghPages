@@ -10,11 +10,13 @@ import { Router } from './router.js';
 import { eventBus } from './EventBus.js';
 
 export async function runApp(el) {
+  const basePath = PRODUCTION ? '/CICD-ghPages' : '';
+  
   el.innerHTML = `
     <div class="weather-app">
       <nav class="navi">
       <p>
-        <a href="/" data-route="/" class="nav-link">🌤 Главная2</a>
+        <a href="/" data-route="/" class="nav-link">🌤 Главная</a>
         <a href="/weather/Moscow" data-route="/weather/Moscow" class="nav-link">🏛 Москва</a>
         <a href="/weather/New%20York" data-route="/weather/New%20York" class="nav-link">🗽 Нью-Йорк</a>
       </p>
@@ -94,7 +96,7 @@ export async function runApp(el) {
     }
   }
 
-  const router = new Router();
+  const router = new Router(basePath);
 
   router.addRoute('/', async () => {
     try {

@@ -1,7 +1,8 @@
 export class Router {
-  constructor() {
+  constructor(basePath = '') {
     this.routes = [];
     this.currentRoute = null;
+    this.basePath = basePath.replace(/\/$/, '');
   }
 
   addRoute(path, handler) {
@@ -58,7 +59,11 @@ export class Router {
     return null;
   }
 
-  async handleRoute(path = window.location.pathname) {
+    getFullPath(path) {
+    return this.basePath + (path.startsWith('/') ? path : '/' + path);
+  }
+
+  async handleRoute(path = this.getCurrentPathWithoutBase()) {
     const matchedRoute = this.findMatchingRoute(path);
 
     if (!matchedRoute) {
@@ -70,13 +75,23 @@ export class Router {
       await matchedRoute.handler([...matchedRoute.params]);
       this.currentRoute = path;
 
-      if (window.location.pathname !== path) {
-        window.history.pushState({}, '', path);
+      const fullPath = this.getFullPath(path);
+      if (window.location.pathname !== fullPath) {
+        window.history.pushState({}, '', fullPath);
       }
     } catch (error) {
       console.error(`Ошибка при обработке маршрута "${path}":`, error);
       throw error;
     }
+  }
+
+  getCurrentPathWithoutBase() {
+    let path = window.location.pathname;
+    
+    if (this.basePath && path.startsWith(this.basePath)) {
+      path = path.slice(this.basePath.length) || '/';
+    }
+    return path;
   }
 
   init() {
@@ -100,6 +115,9 @@ export class Router {
   }
 
   navigate(path) {
+    if (this.basePath && path.startsWith(this.basePath)) {
+      path = path.slice(this.basePath.length) || '/';
+    }
     this.handleRoute(path);
   }
 }
