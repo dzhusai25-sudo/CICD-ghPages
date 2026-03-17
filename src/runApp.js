@@ -191,5 +191,17 @@ export async function runApp(el) {
         content.innerHTML = '';
       }
     });
+
+  try {
+    const city = await locationService.getCurrentLocation();
+    const weatherData = await weatherService.fetchWeather(city);
+
+    await currentWeatherWidget.render(weatherData);
+  } catch (error) {
+    console.error('Ошибка:', error);
+    eventBus.emit(
+      'error',
+      'Не удалось загрузить приложение. Проверьте подключение к интернету.',
+    );
   }
 }

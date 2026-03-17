@@ -22,6 +22,7 @@ export class WeatherCurrentWidget {
       this.container.innerHTML = `
         <div class="weather-current">
           <h3>Погода в вашем городе</h3>
+          <h3>Текущая погода</h3>
           <div class="current-weather">${weatherData.name}: ${weatherData.main.temp}°C</div>
         </div>
       `;
