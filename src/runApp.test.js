@@ -1,3 +1,7 @@
+//мокк для глобальной переменной и url
+global.PRODUCTION = false;
+global.PREFIX = '/';
+
 import { runApp } from './runApp';
 import { WeatherService } from '../src/services/WeatherService';
 import { LocationService } from '../src/services/LocationService';
@@ -6,9 +10,18 @@ import { WeatherCurrentWidget } from '../src/widgets/WeatherCurrentWidget.js';
 import { WeatherSearchWidget } from '../src/widgets/WeatherSearchWidget.js';
 import { SearchHistoryWidget } from '../src/widgets/SearchHistoryWidget.js';
 import { ErrorWidget } from '../src/widgets/ErrorWidget.js';
-import { EventBus } from './EventBus.js';
+import { eventBus } from './EventBus.js';
+import { Router } from './router.js';
 
 global.fetch = jest.fn();
+
+// jest.mock('./router.js', () => ({
+//   Router: jest.fn().mockImplementation(() => ({
+//     addRoute: jest.fn(),
+//     init: jest.fn(),
+//     navigate: jest.fn(),
+//   })),
+// }));
 
 describe('WeatherService', () => {
   let weatherService;
@@ -132,14 +145,23 @@ describe('Check runApp', () => {
 
   beforeEach(() => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'log').mockImplementation(() => {}); // Заглушка для логов роутера
     appContainer = document.createElement('div');
     document.body.appendChild(appContainer);
+    
+    // Мок для fetch (LocationService)
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ city: 'Moscow' }),
+    });
   });
 
   afterEach(() => {
     console.error.mockRestore();
+    console.log.mockRestore();
     document.body.removeChild(appContainer);
     localStorage.clear();
+    jest.clearAllMocks();
   });
 
   it('function test', () => expect(runApp).toBeInstanceOf(Function));
@@ -155,32 +177,18 @@ describe('Check runApp', () => {
     await runApp(el);
 
     // основные элементы интерфейса
-    expect(el.querySelector('#cityInput')).not.toBeNull();
-    expect(el.querySelector('#getWeatherBtn')).not.toBeNull();
     expect(el.querySelector('#searchWidget')).not.toBeNull();
     expect(el.querySelector('#historyWidget')).not.toBeNull();
     expect(el.querySelector('#currentWidget')).not.toBeNull();
     expect(el.querySelector('#errorWidget')).not.toBeNull();
 
-    // лоадинг после клика
-    el.querySelector('#cityInput').value = 'Tomsk';
-    el.querySelector('#getWeatherBtn').click();
-    expect(el.querySelector('#weatherResult').textContent).toContain(
-      'Загрузка...',
-    );
-  });
-
-  it('должна отображать состояние загрузки при запросе погоды', async () => {
-    await runApp(appContainer);
-
-    const input = appContainer.querySelector('#cityInput');
-    const button = appContainer.querySelector('#getWeatherBtn');
-    const resultDiv = appContainer.querySelector('#weatherResult');
-
-    input.value = 'Tomsk';
-    button.click();
-
-    expect(resultDiv.textContent).toContain('Загрузка...');
+    // нави
+    expect(el.querySelector('.navi')).not.toBeNull();
+    expect(el.querySelectorAll('[data-route]').length).toBe(5); // 5 ссылок в навигации
+    
+    // заголовки
+    expect(el.querySelector('.runApp')).not.toBeNull();
+    expect(el.querySelector('.orNot')).not.toBeNull();
   });
 
   it('должна корректно отображать историю поиска', async () => {
@@ -188,6 +196,9 @@ describe('Check runApp', () => {
     storageService.addCityToHistory('Moscow');
 
     await runApp(appContainer);
+
+    //время на рендеринг
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     const historyDiv = appContainer.querySelector('#historyWidget');
     const listItems = historyDiv.querySelectorAll('li');
@@ -198,16 +209,11 @@ describe('Check runApp', () => {
 });
 
 describe('EventBus', () => {
-  let bus;
-
-  beforeEach(() => {
-    bus = new EventBus();
-  });
 
   test('подписка и отправка событий', () => {
     const callback = jest.fn();
-    bus.on('testEvent', callback);
-    bus.emit('testEvent', 'arg1', 'arg2');
+    eventBus.on('testEvent', callback);
+    eventBus.emit('testEvent', 'arg1', 'arg2');
     expect(callback).toHaveBeenCalledWith('arg1', 'arg2');
   });
 
@@ -215,28 +221,28 @@ describe('EventBus', () => {
     const callback1 = jest.fn();
     const callback2 = jest.fn();
 
-    bus.on('testEvent', callback1);
-    bus.on('testEvent', callback2);
-    bus.off('testEvent', callback1);
+    eventBus.on('testEvent', callback1);
+    eventBus.on('testEvent', callback2);
+    eventBus.off('testEvent', callback1);
 
-    bus.emit('testEvent');
+    eventBus.emit('testEvent');
     expect(callback1).not.toHaveBeenCalled();
     expect(callback2).toHaveBeenCalled();
   });
 
   test('эмит события без подписчиков', () => {
-    expect(() => bus.emit('unknown')).not.toThrow();
+    expect(() => eventBus.emit('unknown')).not.toThrow();
   });
 
   test('несколько событий с разными обработчиками', () => {
     const cb1 = jest.fn();
     const cb2 = jest.fn();
 
-    bus.on('event1', cb1);
-    bus.on('event2', cb2);
+    eventBus.on('event1', cb1);
+    eventBus.on('event2', cb2);
 
-    bus.emit('event1');
-    bus.emit('event2');
+    eventBus.emit('event1');
+    eventBus.emit('event2');
 
     expect(cb1).toHaveBeenCalled();
     expect(cb2).toHaveBeenCalled();
@@ -244,9 +250,9 @@ describe('EventBus', () => {
 
   test('удаление всех обработчиков при пустом наборе', () => {
     const callback = jest.fn();
-    bus.on('test', callback);
-    bus.off('test', callback);
-    expect(bus.events.has('test')).toBe(false);
+    eventBus.on('test', callback);
+    eventBus.off('test', callback);
+    expect(eventBus.events.has('test')).toBe(false);
   });
 });
 
@@ -326,4 +332,151 @@ describe('WeatherCurrentWidget', () => {
       'Загрузка текущей погоды...',
     );
   });
+
+
+  describe('Router', () => {
+  let router;
+  let mockHandler;
+  let originalLocation;
+  let originalHistory;
+  let originalAddEventListener;
+  let originalDocumentAddEventListener;
+
+  // Импортируем реальный Router (не мок)
+  const RealRouter = jest.requireActual('./router.js').Router;
+
+  beforeEach(() => {
+    // Сохраняем оригиналы
+    originalLocation = window.location;
+    originalHistory = window.history;
+    originalAddEventListener = window.addEventListener;
+    originalDocumentAddEventListener = document.addEventListener;
+
+    // Мокаем window.location
+    delete window.location;
+    window.location = { 
+      pathname: '/', 
+      href: 'http://localhost/' 
+    };
+
+    // Мокаем window.history с jest.fn()
+    window.history = {
+      pushState: jest.fn(),
+      replaceState: jest.fn(),
+    };
+
+    // Мокаем addEventListener
+    window.addEventListener = jest.fn();
+    document.addEventListener = jest.fn();
+
+    mockHandler = jest.fn().mockResolvedValue(undefined);
+    router = new RealRouter();
+  });
+
+  afterEach(() => {
+    window.location = originalLocation;
+    window.history = originalHistory;
+    window.addEventListener = originalAddEventListener;
+    document.addEventListener = originalDocumentAddEventListener;
+    jest.clearAllMocks();
+  });
+
+  describe('constructor', () => {
+    test('должен создавать экземпляр с пустыми маршрутами', () => {
+      expect(router.routes).toEqual([]);
+      expect(router.currentRoute).toBeNull();
+    });
+
+    test('должен создавать экземпляр с basePath', () => {
+      const routerWithBase = new RealRouter('/base');
+      expect(routerWithBase.basePath).toBe('/base');
+    });
+  });
+
+  describe('addRoute', () => {
+    test('должен добавлять статический маршрут', () => {
+      router.addRoute('/about', mockHandler);
+      
+      const route = router.routes.find(r => r.path === '/about');
+      expect(route.type).toBe('static');
+      expect(route.handler).toBe(mockHandler);
+    });
+
+    test('должен добавлять параметрический маршрут', () => {
+      router.addRoute('/weather/*', mockHandler);
+      
+      const route = router.routes.find(r => r.path === '/weather');
+      expect(route.type).toBe('param');
+      expect(route.handler).toBe(mockHandler);
+    });
+
+    test('должен добавлять маршрут для 404', () => {
+      router.addRoute('*', mockHandler);
+      
+      const route = router.routes.find(r => r.path === '*');
+      expect(route.type).toBe('static');
+      expect(route.handler).toBe(mockHandler);
+    });
+  });
+
+  describe('findMatchingRoute', () => {
+    beforeEach(() => {
+      router.addRoute('/', mockHandler);
+      router.addRoute('/about', mockHandler);
+      router.addRoute('/weather/*', mockHandler);
+      router.addRoute('*', mockHandler);
+    });
+
+    test('должен находить статический маршрут', () => {
+      const result = router.findMatchingRoute('/about');
+      expect(result).not.toBeNull();
+      expect(result.handler).toBe(mockHandler);
+    });
+
+    test('должен находить параметрический маршрут', () => {
+      const result = router.findMatchingRoute('/weather/Moscow');
+      expect(result).not.toBeNull();
+      expect(result.params).toEqual(['Moscow']);
+    });
+  });
+
+  describe('handleRoute', () => {
+    beforeEach(() => {
+      router.addRoute('/', mockHandler);
+      router.addRoute('/about', mockHandler);
+    });
+
+    test('должен вызывать обработчик для маршрута', async () => {
+      await router.handleRoute('/about');
+      expect(mockHandler).toHaveBeenCalled();
+    });
+
+    test('должен обновлять currentRoute', async () => {
+      await router.handleRoute('/about');
+      expect(router.currentRoute).toBe('/about');
+    });
+  });
+
+  describe('navigate', () => {
+    test('должен вызывать handleRoute с правильным путем', async () => {
+      const handleRouteSpy = jest.spyOn(router, 'handleRoute');
+      await router.navigate('/about');
+      expect(handleRouteSpy).toHaveBeenCalledWith('/about');
+    });
+  });
+
+  describe('init', () => {
+    test('должен добавлять обработчики событий', () => {
+      router.init();
+      expect(document.addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+      expect(window.addEventListener).toHaveBeenCalledWith('popstate', expect.any(Function));
+    });
+
+    test('должен обрабатывать начальный маршрут', () => {
+      const handleRouteSpy = jest.spyOn(router, 'handleRoute');
+      router.init();
+      expect(handleRouteSpy).toHaveBeenCalled();
+    });
+  });
+});
 });

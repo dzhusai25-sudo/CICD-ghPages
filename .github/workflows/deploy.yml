@@ -14,8 +14,8 @@ jobs:
         with:
           node-version: '24.x' # Or your desired Node.js version
       - run: npm ci
-      # - run: npm test
-      # - run: npm run build
+      - run: npm test
+      - run: npm run build
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.github_token }}

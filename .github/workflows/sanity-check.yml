@@ -12,6 +12,6 @@ jobs:
         with:
           node-version: '24.x' # Or your desired Node.js version
       - run: npm ci
-      # - run: npm test
+      - run: npm test
       - run: npm run lint
-      # - run: npm run build
+      - run: npm run build
