@@ -121,4 +121,3 @@ export class Router {
     this.handleRoute(path);
   }
 }
-//
