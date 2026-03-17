@@ -11,7 +11,7 @@ import { WeatherSearchWidget } from '../src/widgets/WeatherSearchWidget.js';
 import { SearchHistoryWidget } from '../src/widgets/SearchHistoryWidget.js';
 import { ErrorWidget } from '../src/widgets/ErrorWidget.js';
 import { eventBus } from './EventBus.js';
-import { Router } from './router.js';
+import { Router } from './Router.js';
 
 global.fetch = jest.fn();
 
