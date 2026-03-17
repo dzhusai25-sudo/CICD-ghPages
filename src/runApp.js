@@ -6,7 +6,7 @@ import { WeatherCurrentWidget } from './widgets/WeatherCurrentWidget.js';
 import { WeatherSearchWidget } from './widgets/WeatherSearchWidget.js';
 import { SearchHistoryWidget } from './widgets/SearchHistoryWidget.js';
 import { ErrorWidget } from './widgets/ErrorWidget.js';
-import { Router } from './router.js';
+import { Router } from './Router.js';
 import { eventBus } from './EventBus.js';
 
 export async function runApp(el) {
