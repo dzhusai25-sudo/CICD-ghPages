@@ -15,9 +15,10 @@ export class SearchHistoryWidget {
       <div class="search-history">
         <h4>История поиска</h4>
         ${
-          history.length
-            ? `<ul>${history.map((city) => `<li>${city}</li>`).join('')}</ul>`
-            : '<p>История пуста</p>'
+          history.length ? 
+          `<ul>${history.map(city => `<li><a href="/weather/${city}" data-route="/weather/${city}">${city.toUpperCase()}</a></li>`).join('')}</ul>`
+            : 
+            '<p>История пуста</p>'
         }
       </div>
     `;

@@ -11,11 +11,11 @@ export class WeatherSearchWidget {
 
   render() {
     this.container.innerHTML = `
-      <div class="weather-search">
+      <form id="searchForm">
         <input type="text" id="cityInput" placeholder="Enter your city">
-        <button id="getWeatherBtn">Get Weather</button>
+        <button type="submit" id="getWeatherBtn">Get Weather</button>
         <div id="weatherResult"></div>
-      </div>
+      </form>
     `;
   }
 
@@ -34,7 +34,8 @@ export class WeatherSearchWidget {
     const city = this.container.querySelector('#cityInput').value.trim();
     if (!city) return;
 
-    await this.searchWeather(city);
+    //await this.searchWeather(city);
+    eventBus.emit('city:search', city);
   }
 
   async searchWeather(city) {
