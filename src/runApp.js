@@ -98,6 +98,10 @@ export async function runApp(el) {
 
   const router = new Router(basePath);
 
+  eventBus.on('city:search', (city) => {
+  router.navigate(`/weather/${encodeURIComponent(city)}`);
+});
+
   router.addRoute('/', async () => {
     try {
       clearContent();

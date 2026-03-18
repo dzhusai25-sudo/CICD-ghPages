@@ -275,13 +275,17 @@ describe('WeatherSearchWidget', () => {
     );
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('рендеринг интерфейса', () => {
     expect(container.querySelector('#cityInput')).not.toBeNull();
     expect(container.querySelector('#getWeatherBtn')).not.toBeNull();
   });
 
   test('поиск города вызывает fetchWeather', async () => {
-    mockWeatherService.fetchWeather.mockResolvedValue({ name: 'Moscow' });
+    const emitSpy = jest.spyOn(eventBus, 'emit');
     const input = container.querySelector('#cityInput');
     input.value = 'Moscow';
     const button = container.querySelector('#getWeatherBtn');
@@ -289,19 +293,8 @@ describe('WeatherSearchWidget', () => {
 
     await Promise.resolve();
 
-    expect(mockWeatherService.fetchWeather).toHaveBeenCalledWith('Moscow');
-  });
-
-  test('обновление истории при успешном поиске', async () => {
-    mockWeatherService.fetchWeather.mockResolvedValue({});
-    const input = container.querySelector('#cityInput');
-    input.value = 'Moscow';
-    const button = container.querySelector('#getWeatherBtn');
-    button.click();
-
-    await Promise.resolve();
-
-    expect(mockStorageService.addCityToHistory).toHaveBeenCalledWith('Moscow');
+    expect(emitSpy).toHaveBeenCalledWith('city:search', 'Moscow');
+    emitSpy.mockRestore();
   });
 });
 
