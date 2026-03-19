@@ -18,11 +18,16 @@ const config = {
     },
   },
 
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
+  testPathIgnorePatterns: ['/node_modules/', '/lib/'],
+  preset: 'ts-jest',
+
   moduleNameMapper: {
     '\\.css$': '<rootDir>/__mocks__/styleMock.js',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
 
-  collectCoverageFrom: ['src/**/*.js', '!src/**/*.test.js', '!src/**/index.js'],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.test.{ts,tsx}', '!src/**/index.{ts,tsx}'],
 
   transformIgnorePatterns: ['/node_modules/'],
 };

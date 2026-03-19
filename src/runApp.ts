@@ -1,15 +1,16 @@
 import './runApp.css';
-import { WeatherService } from './services/WeatherService.js';
-import { LocationService } from './services/LocationService.js';
-import { StorageService } from './services/StorageService.js';
-import { WeatherCurrentWidget } from './widgets/WeatherCurrentWidget.js';
-import { WeatherSearchWidget } from './widgets/WeatherSearchWidget.js';
-import { SearchHistoryWidget } from './widgets/SearchHistoryWidget.js';
-import { ErrorWidget } from './widgets/ErrorWidget.js';
-import { Router } from './Router.js';
-import { eventBus } from './EventBus.js';
+import { WeatherService } from './services/WeatherService';
+import { LocationService } from './services/LocationService';
+import { StorageService } from './services/StorageService';
+import { WeatherCurrentWidget } from './widgets/WeatherCurrentWidget';
+import { WeatherSearchWidget } from './widgets/WeatherSearchWidget';
+import { SearchHistoryWidget } from './widgets/SearchHistoryWidget';
+import { ErrorWidget } from './widgets/ErrorWidget';
+import { Router } from './Router';
+import { eventBus } from './EventBus';
 
-export async function runApp(el) {
+
+export async function runApp(el: HTMLElement): Promise<void> {
   const basePath = PRODUCTION ? '/CICD-ghPages' : '';
   
   el.innerHTML = `
@@ -44,23 +45,23 @@ export async function runApp(el) {
   const weatherSubtitle = el.querySelector('.orNot');
 
   const currentWeatherWidget = new WeatherCurrentWidget(
-    currentWidgetContainer,
+    currentWidgetContainer as HTMLElement,
     weatherService,
     locationService,
   );
 
   const weatherSearchWidget = new WeatherSearchWidget(
-    searchWidgetContainer,
+    searchWidgetContainer as HTMLElement,
     weatherService,
     storageService,
   );
 
   const searchHistoryWidget = new SearchHistoryWidget(
-    historyWidgetContainer,
+    historyWidgetContainer as HTMLElement,
     storageService,
   );
 
-  let errorWidget = null;
+  let errorWidget: ErrorWidget | null = null;
 
   if (errorWidgetContainer) {
     errorWidget = new ErrorWidget(errorWidgetContainer);
@@ -68,15 +69,16 @@ export async function runApp(el) {
     console.warn('Контейнер для ErrorWidget не найден на странице');
   }
 
-  async function displayWeatherForCity(city) {
+  async function displayWeatherForCity(city: string): Promise<void> {
+
     try {
       clearContent();
       const decodedCity = decodeURIComponent(city);
       const currenCity = await locationService.getCurrentLocation();
       const weatherData = await weatherService.fetchWeather(currenCity);
 
-      weatherTitle.innerHTML = 'Enjoy your weather! 🌞';
-      weatherSubtitle.innerHTML = '... (or not 🌧️)';
+      (weatherTitle as HTMLElement).innerHTML = 'Enjoy your weather! 🌞';
+      (weatherSubtitle as HTMLElement).innerHTML = '... (or not 🌧️)';
       weatherSearchWidget.render();
       weatherSearchWidget.bindEvents();
       searchHistoryWidget.render();
@@ -98,15 +100,15 @@ export async function runApp(el) {
 
   const router = new Router(basePath);
 
-  eventBus.on('city:search', (city) => {
+  eventBus.on('city:search', (city: string) => {
   router.navigate(`/weather/${encodeURIComponent(city)}`);
 });
 
   router.addRoute('/', async () => {
     try {
       clearContent();
-      weatherTitle.innerHTML = 'Enjoy your weather! 🌞';
-      weatherSubtitle.innerHTML = '... (or not 🌧️)';
+      (weatherTitle as HTMLElement).innerHTML = 'Enjoy your weather! 🌞';
+      (weatherSubtitle as HTMLElement).innerHTML = '... (or not 🌧️)';
 
       const city = await locationService.getCurrentLocation();
       const weatherData = await weatherService.fetchWeather(city);
@@ -128,7 +130,8 @@ export async function runApp(el) {
     }
   });
 
-  router.addRoute('/weather/*', async (city) => {
+  router.addRoute('/weather/*', async (params: string[]) => {
+    const city = params[0] as string;
     clearContent();
     await displayWeatherForCity(city);
   });
@@ -136,7 +139,7 @@ export async function runApp(el) {
   router.addRoute('/about', () => {
     clearContent();
 
-    searchWidgetContainer.innerHTML = `
+    (searchWidgetContainer as HTMLElement).innerHTML = `
       <div class="about-page">
         <h2>О приложении</h2>
         <p>Это приложение показывает погоду в реальном времени.</p>
@@ -148,7 +151,7 @@ export async function runApp(el) {
   router.addRoute('/contacts', () => {
     clearContent();
 
-    searchWidgetContainer.innerHTML = `
+    (searchWidgetContainer as HTMLElement).innerHTML = `
       <div class="contacts-page">
         <h2>Контакты</h2>
         <a href="https://github.com/dzhusai25-sudo" target="_blank" rel="noopener noreferrer">
@@ -161,7 +164,7 @@ export async function runApp(el) {
   router.addRoute('*', () => {
     clearContent();
 
-    searchWidgetContainer.innerHTML = `
+    (searchWidgetContainer as HTMLElement).innerHTML = `
       <div class="error-page">
         <h2>404 - Страница не найдена</h2>
         <p>Запрошенная страница не существует.</p>

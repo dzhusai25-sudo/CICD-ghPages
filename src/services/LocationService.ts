@@ -1,4 +1,6 @@
 export class LocationService {
+  geoUrl: string;
+
   constructor() {
     this.geoUrl = 'https://get.geojs.io/v1/ip/geo.json';
   }

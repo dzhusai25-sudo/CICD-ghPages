@@ -1,13 +1,32 @@
+import { Route, RouteHandler, MatchedRoute } from './interfaces/Interfaces';
+
+// type RouteType = 'static' | 'param';
+
+// interface Route {
+//   type: RouteType;
+//   path: string;
+//   handler: RouteHandler;
+// }
+
+// type RouteHandler = (params: string[]) => Promise<void> | void;
+
+// interface MatchedRoute {
+//   handler: RouteHandler;
+//   params: string[];
+// }
+
 export class Router {
+  routes: Route[] = [];
+  currentRoute: string | null = null;
+  basePath: string;
+
   constructor(basePath = '') {
-    this.routes = [];
-    this.currentRoute = null;
     this.basePath = basePath.replace(/\/$/, '');
   }
 
-  addRoute(path, handler) {
+  addRoute(path: string, handler: RouteHandler): void {
     if (path.includes('/*')) {
-      path = path.split('/*')[0];
+      path = path.split('/*')[0] as string;
       this.routes.push({
         type: 'param',
         path,
@@ -22,7 +41,7 @@ export class Router {
     }
   }
 
-  findMatchingRoute(path) {
+  findMatchingRoute(path: string): MatchedRoute | null {
     console.log(path);
     // статические маршруты
     const staticRoute = this.routes.find(
@@ -59,11 +78,11 @@ export class Router {
     return null;
   }
 
-    getFullPath(path) {
+    getFullPath(path: string): string {
     return this.basePath + (path.startsWith('/') ? path : '/' + path);
   }
 
-  async handleRoute(path = this.getCurrentPathWithoutBase()) {
+  async handleRoute(path: string = this.getCurrentPathWithoutBase()): Promise<void> {
     const matchedRoute = this.findMatchingRoute(path);
 
     if (!matchedRoute) {
@@ -85,7 +104,7 @@ export class Router {
     }
   }
 
-  getCurrentPathWithoutBase() {
+  getCurrentPathWithoutBase(): string {
     let path = window.location.pathname;
     
     if (this.basePath && path.startsWith(this.basePath)) {
@@ -94,13 +113,13 @@ export class Router {
     return path;
   }
 
-  init() {
+  init(): void {
     // нави по ссылкам
     document.addEventListener('click', (e) => {
-      const link = e.target.closest('a[data-route]');
+      const link = (e.target as Element).closest('a[data-route]');
       if (link) {
         e.preventDefault();
-        const route = link.getAttribute('data-route');
+        const route = link.getAttribute('data-route') as string;
         this.navigate(route);
       }
     });
@@ -114,7 +133,7 @@ export class Router {
     this.handleRoute();
   }
 
-  navigate(path) {
+  navigate(path: string): void {
     if (this.basePath && path.startsWith(this.basePath)) {
       path = path.slice(this.basePath.length) || '/';
     }

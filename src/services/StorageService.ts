@@ -1,17 +1,19 @@
 export class StorageService {
+  key: string;
+
   constructor(key = 'Cities') {
     this.key = key;
   }
 
-  getHistory() {
-    return JSON.parse(localStorage.getItem(this.key)) || [];
+  getHistory(): string[] {
+    return JSON.parse(localStorage.getItem(this.key) as string) || [];
   }
 
-  saveHistory(history) {
+  saveHistory(history: object) {
     localStorage.setItem(this.key, JSON.stringify(history));
   }
 
-  addCityToHistory(city) {
+  addCityToHistory(city: string): string[] {
     let history = this.getHistory();
     history = history.filter((el) => el.toLowerCase() !== city.toLowerCase());
     history.unshift(city);

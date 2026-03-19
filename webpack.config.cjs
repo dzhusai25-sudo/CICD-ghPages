@@ -8,7 +8,10 @@ const BASE_URL = `https://dzhusai25-sudo.github.io/${REPO_NAME}/`;
 const PREFIX = isProduction ? BASE_URL : '/';
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.ts',
+ resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
@@ -39,6 +42,11 @@ module.exports = {
   ],
   module: {
     rules: [
+            {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
