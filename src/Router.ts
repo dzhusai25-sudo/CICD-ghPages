@@ -1,20 +1,5 @@
 import { Route, RouteHandler, MatchedRoute } from './interfaces/Interfaces';
 
-// type RouteType = 'static' | 'param';
-
-// interface Route {
-//   type: RouteType;
-//   path: string;
-//   handler: RouteHandler;
-// }
-
-// type RouteHandler = (params: string[]) => Promise<void> | void;
-
-// interface MatchedRoute {
-//   handler: RouteHandler;
-//   params: string[];
-// }
-
 export class Router {
   routes: Route[] = [];
   currentRoute: string | null = null;

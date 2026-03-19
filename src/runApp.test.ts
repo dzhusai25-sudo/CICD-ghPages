@@ -13,11 +13,8 @@ import { LocationService } from './services/LocationService';
 import { StorageService } from './services/StorageService';
 import { WeatherCurrentWidget } from './widgets/WeatherCurrentWidget';
 import { WeatherSearchWidget } from './widgets/WeatherSearchWidget';
-import { SearchHistoryWidget } from './widgets/SearchHistoryWidget';
-import { ErrorWidget } from './widgets/ErrorWidget';
 import { eventBus } from './EventBus';
 import { Router } from './Router';
-import { EventMap as OriginalEventMap } from './interfaces/Interfaces';
 
 declare module './interfaces/Interfaces' {
   interface EventMap {
@@ -29,16 +26,10 @@ declare module './interfaces/Interfaces' {
   }
 }
 
-
 let weatherService: WeatherService;
 let locationService: LocationService;
 let storageService: StorageService;
 let appContainer: HTMLDivElement;
-let container: HTMLDivElement;
-let widget: WeatherSearchWidget;
-let router: Router;
-let mockHandler: jest.Mock;
-
 
 global.fetch = jest.fn();
 const mockedFetch = fetch as jest.Mock;
