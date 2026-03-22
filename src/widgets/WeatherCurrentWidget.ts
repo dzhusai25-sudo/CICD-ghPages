@@ -1,13 +1,20 @@
-import { eventBus } from '../EventBus.js';
+import { eventBus } from '../EventBus';
+import { WeatherService } from '../services/WeatherService';
+import { LocationService } from '../services/LocationService';
+import { WeatherData } from '../interfaces/Interfaces';
 
 export class WeatherCurrentWidget {
-  constructor(container, weatherService, locationService) {
+  private container: Element;
+  private weatherService: WeatherService;
+  private locationService: LocationService;
+
+  constructor(container: Element, weatherService: WeatherService, locationService: LocationService) {
     this.container = container;
     this.weatherService = weatherService;
     this.locationService = locationService;
   }
 
-  async render(weatherData) {
+  async render(weatherData: WeatherData): Promise<void> {
     try {
       if (!weatherData) {
         this.container.innerHTML = `
@@ -27,7 +34,8 @@ export class WeatherCurrentWidget {
       `;
       eventBus.emit('weather:current:loaded', { weatherData });
     } catch (error) {
-      eventBus.emit('error', error.message);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      eventBus.emit('error', errorMessage);
     }
   }
 }

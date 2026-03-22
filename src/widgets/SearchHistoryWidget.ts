@@ -1,7 +1,11 @@
-import { eventBus } from '../EventBus.js';
+import { eventBus } from '../EventBus';
+import { StorageService } from '../services/StorageService';
 
 export class SearchHistoryWidget {
-  constructor(container, storageService) {
+  private container: HTMLElement;
+  private storageService: StorageService;
+
+  constructor(container: HTMLElement, storageService: StorageService) {
     this.container = container;
     this.storageService = storageService;
     this.render();
@@ -16,7 +20,7 @@ export class SearchHistoryWidget {
         <h4>История поиска</h4>
         ${
           history.length ? 
-          `<ul>${history.map(city => `<li><a href="/weather/${city}" data-route="/weather/${city}">${city.toUpperCase()}</a></li>`).join('')}</ul>`
+          `<ul>${history.map((city: string) => `<li><a href="/weather/${city}" data-route="/weather/${city}">${city.toUpperCase()}</a></li>`).join('')}</ul>`
             : 
             '<p>История пуста</p>'
         }
