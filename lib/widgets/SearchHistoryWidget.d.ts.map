@@ -1,1 +1,0 @@
-{"version":3,"file":"SearchHistoryWidget.d.ts","sourceRoot":"","sources":["../../src/widgets/SearchHistoryWidget.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,cAAc,EAAE,MAAM,4BAA4B,CAAC;AAE5D,qBAAa,mBAAmB;IAC9B,OAAO,CAAC,SAAS,CAAc;IAC/B,OAAO,CAAC,cAAc,CAAiB;gBAE3B,SAAS,EAAE,WAAW,EAAE,cAAc,EAAE,cAAc;IAQlE,MAAM;CAcP"}
